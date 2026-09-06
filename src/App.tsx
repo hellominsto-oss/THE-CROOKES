@@ -59,14 +59,9 @@ function PhaseRouter({
         <RoleRevealScreen
           state={state}
           onReveal={() => dispatch({ type: 'REVEAL_ROLE' })}
-          onHide={() => dispatch({ type: 'HIDE_ROLE' })}
-          onNext={() => {
-            const nextIndex = state.roleRevealIndex + 1;
-            if (nextIndex >= state.totalPlayers) {
-              dispatch({ type: 'START_ROUND' });
-            } else {
-              dispatch({ type: 'NEXT_ROLE_REVEAL' });
-            }
+          onHide={() => {
+            dispatch({ type: 'HIDE_ROLE' });
+            dispatch({ type: 'NEXT_ROLE_REVEAL' });
           }}
         />
       );

@@ -3,48 +3,22 @@ import { PassPhone, PrivacyShield } from '@/components/PassPhone';
 import { CoinPile } from '@/components/CoinIcon';
 import type { GameState, Player } from '@/game/types';
 import { getLivingCrooks } from '@/game/logic';
-import { Eye, Shield, Skull } from 'lucide-react';
+import { Shield, Skull } from 'lucide-react';
 
 interface RoleRevealScreenProps {
   state: GameState;
   onReveal: () => void;
   onHide: () => void;
-  onNext: () => void;
 }
 
-export function RoleRevealScreen({ state, onReveal, onHide, onNext }: RoleRevealScreenProps) {
+export function RoleRevealScreen({ state, onReveal, onHide }: RoleRevealScreenProps) {
   const { t } = useLang();
   const player = state.players[state.roleRevealIndex];
   if (!player) return null;
 
-  const isLast = state.roleRevealIndex === state.totalPlayers - 1;
   const fellowCrooks = player.role === 'crook'
     ? getLivingCrooks(state).filter((c) => c.id !== player.id)
     : [];
-
-  // After last player hides, show a clean transition screen
-  if (isLast && !state.showPrivateInfo && state.roleRevealIndex === state.totalPlayers - 1) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-6 py-8 bg-radial-gold">
-        <div className="max-w-md w-full text-center space-y-8 animate-fade-in-up">
-          <div className="relative inline-block">
-            <div className="absolute inset-0 blur-3xl bg-gold-500/20 rounded-full" />
-            <div className="relative w-24 h-24 rounded-full bg-ink-800 border-2 border-gold-600/50 flex items-center justify-center">
-              <Eye size={48} className="text-gold-400" />
-            </div>
-          </div>
-          <div>
-            <h2 className="text-2xl font-display font-bold text-gold-300">
-              {t('roleRevealDone')}
-            </h2>
-          </div>
-          <button onClick={onNext} className="btn-primary text-lg w-full max-w-xs">
-            {t('startRound')}
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col px-6 py-8">
@@ -100,7 +74,7 @@ export function RoleRevealScreen({ state, onReveal, onHide, onNext }: RoleReveal
             )}
 
             <button
-              onClick={isLast ? onHide : onHide}
+              onClick={onHide}
               className="btn-secondary min-w-[200px] mt-4"
             >
               {t('hideInfo')}
