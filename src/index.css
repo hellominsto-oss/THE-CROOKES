@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #050507;
+  color: #e8e8f0;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+body[dir='rtl'] {
+  font-family: 'Cairo', 'Noto Naskh Arabic', sans-serif;
+}
+
+body[dir='rtl'] .font-display {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+}
+
+@layer components {
+  .bg-radial-gold {
+    background-image: radial-gradient(circle at 50% 0%, rgba(245, 178, 37, 0.08), transparent 60%);
+  }
+  .bg-radial-blood {
+    background-image: radial-gradient(circle at 50% 0%, rgba(229, 57, 53, 0.08), transparent 60%);
+  }
+  .card-surface {
+    @apply bg-ink-800/80 border border-ink-600/60 rounded-2xl backdrop-blur-sm;
+  }
+  .btn-primary {
+    @apply bg-gradient-to-b from-gold-400 to-gold-600 text-ink-950 font-bold py-4 px-6 rounded-xl
+           shadow-lg shadow-gold-900/30 active:scale-[0.98] transition-all
+         hover:from-gold-300 hover:to-gold-500 disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply bg-ink-700/80 border border-ink-500/60 text-gray-200 font-semibold py-4 px-6 rounded-xl
+           active:scale-[0.98] transition-all hover:bg-ink-600/80;
+  }
+  .btn-danger {
+    @apply bg-gradient-to-b from-blood-400 to-blood-600 text-white font-bold py-4 px-6 rounded-xl
+           shadow-lg shadow-blood-900/30 active:scale-[0.98] transition-all
+           hover:from-blood-500 hover:to-blood-700;
+  }
+  .input-field {
+    @apply w-full bg-ink-900/80 border border-ink-600/60 rounded-xl px-4 py-3.5 text-gray-100
+           placeholder-gray-500 focus:border-gold-500/60 focus:outline-none focus:ring-1
+           focus:ring-gold-500/30 transition-all;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium;
+  }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
