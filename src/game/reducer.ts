@@ -139,23 +139,34 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const nextIndex = state.privateActionIndex + 1;
 
       if (nextIndex >= livingAll.length) {
-        return { ...state, phase: 'ROUND_RESULT', showPrivateInfo: false, privateActionIndex: 0 };
+        let players = state.players;
+        let roundChanges = state.roundChanges;
+
+        if (state.currentPlan) {
+          const result = executeTransfer(state, state.currentPlan);
+          players = state.players.map((p) => {
+            const newBal = result.newBalances.get(p.id);
+            return newBal !== undefined ? { ...p, balance: newBal } : p;
+          });
+          roundChanges = result.changes;
+        }
+
+        return {
+          ...state,
+          players,
+          roundChanges,
+          phase: 'ROUND_RESULT',
+          showPrivateInfo: false,
+          privateActionIndex: 0,
+        };
       }
       return { ...state, privateActionIndex: nextIndex, showPrivateInfo: false };
     }
 
     case 'CREATE_PLAN': {
-      const { changes, newBalances } = executeTransfer(state, action.plan);
-      const updatedPlayers = state.players.map((p) => {
-        const newBal = newBalances.get(p.id);
-        return newBal !== undefined ? { ...p, balance: newBal } : p;
-      });
-
       return {
         ...state,
-        players: updatedPlayers,
         currentPlan: action.plan,
-        roundChanges: changes,
         showPrivateInfo: false,
       };
     }
