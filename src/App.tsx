@@ -139,7 +139,7 @@ function PhaseRouter({
             dispatch({ type: 'CAST_VOTE', targetId });
             dispatch({ type: 'NEXT_VOTE' });
           }}
-          onNext={() => dispatch({ type: 'TALLY_VOTES' })}
+          onNext={() => dispatch({ type: 'NEXT_VOTE' })}
           isRevote={false}
         />
       );
@@ -154,7 +154,7 @@ function PhaseRouter({
             dispatch({ type: 'CAST_VOTE', targetId });
             dispatch({ type: 'NEXT_VOTE' });
           }}
-          onNext={() => dispatch({ type: 'TALLY_VOTES' })}
+          onNext={() => dispatch({ type: 'NEXT_VOTE' })}
           isRevote={true}
         />
       );

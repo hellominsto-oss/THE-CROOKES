@@ -37,7 +37,6 @@ export type Action =
   | { type: 'CAST_VOTE'; targetId: number }
   | { type: 'HIDE_VOTE_INFO' }
   | { type: 'NEXT_VOTE' }
-  | { type: 'TALLY_VOTES' }
   | { type: 'SHOW_ELIMINATION' }
   | { type: 'DISTRIBUTE_REWARDS' }
   | { type: 'NEXT_ROUND' }
@@ -219,38 +218,36 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const nextVoteIndex = state.voteIndex + 1;
 
       if (nextVoteIndex >= livingIds.length) {
-        return { ...state, phase: 'TALLY_VOTES', voteIndex: 0, showPrivateInfo: false };
-      }
-      return { ...state, voteIndex: nextVoteIndex, showPrivateInfo: false };
-    }
+        const eligibleIds = state.tiedPlayers.length > 0 ? state.tiedPlayers : livingIds;
+        const { eliminatedId, tiedIds } = tallyVotes(state, eligibleIds);
 
-    case 'TALLY_VOTES': {
-      const eligibleIds = state.tiedPlayers.length > 0 ? state.tiedPlayers : getLivingPlayers(state).map((p) => p.id);
-      const { eliminatedId, tiedIds } = tallyVotes(state, eligibleIds);
+        if (eliminatedId !== null) {
+          const updatedPlayers = state.players.map((p) =>
+            p.id === eliminatedId ? { ...p, alive: false } : p,
+          );
 
-      if (eliminatedId !== null) {
-        const updatedPlayers = state.players.map((p) =>
-          p.id === eliminatedId ? { ...p, alive: false } : p,
-        );
+          return {
+            ...state,
+            players: updatedPlayers,
+            eliminatedPlayerId: eliminatedId,
+            tiedPlayers: [],
+            phase: 'ELIMINATION',
+            voteIndex: 0,
+            showPrivateInfo: false,
+          };
+        }
 
         return {
           ...state,
-          players: updatedPlayers,
-          eliminatedPlayerId: eliminatedId,
-          tiedPlayers: [],
-          phase: 'ELIMINATION',
+          tiedPlayers: tiedIds,
+          phase: 'REVOTE',
+          voteIndex: 0,
+          votes: {},
+          showPrivateInfo: false,
+          players: state.players.map((p) => ({ ...p, votedForThisCrook: false })),
         };
       }
-
-      return {
-        ...state,
-        tiedPlayers: tiedIds,
-        phase: 'REVOTE',
-        voteIndex: 0,
-        votes: {},
-        showPrivateInfo: false,
-        players: state.players.map((p) => ({ ...p, votedForThisCrook: false })),
-      };
+      return { ...state, voteIndex: nextVoteIndex, showPrivateInfo: false };
     }
 
     case 'SHOW_ELIMINATION': {
