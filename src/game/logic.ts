@@ -138,7 +138,7 @@ export function distributeCrookReward(state: GameState, eliminated: Player): Map
   const result = new Map<number, number>();
   if (eliminated.balance === 0) return result;
 
-  const votingCitizens = getLivingCitizens(state).filter((p) => p.votedForThisCrook);
+  const votingCitizens = getLivingCitizens(state).filter((p) => state.votes[p.id] === eliminated.id);
   if (votingCitizens.length === 0) return result;
 
   const { perPerson, remainder } = distributeRemainder(eliminated.balance, votingCitizens);
